@@ -49,62 +49,50 @@ type sim_state =
 (* -------------------------------------------------------------------------- *)
 
 (* -------------------------------------------------------------------------- *)
-class result : Ojs.t ->
-  object
-    inherit Ojs.obj
+type result = private Ojs.t
+(* ------------------------------------------ *)
+(* General *)
+val carrier_name : result -> string
+val country_code : result -> string
+val mcc : result -> string
+val mnc : result -> string
+(* ------------------------------------------ *)
 
-    (* ------------------------------------------ *)
-    (* General *)
-    method carrier_name : string
-    method country_code : string
-    method mcc : string
-    method mnc : string
-    (* ------------------------------------------ *)
+(* ------------------------------------------ *)
+(* Android *)
+val phone_number : result -> string
+val device_id : result -> string
+val device_software_version : result -> string
+val sim_serial_number : result -> string
+val subscriber_id : result -> string
+val call_state : result -> call_state
+val data_activity : result -> data_activity
+val network_type : result -> network_type
+val phone_type : result -> phone_type
+val sim_state : result -> sim_state
+val is_network_roaming : result -> bool
+(* ------------------------------------------ *)
 
-    (* ------------------------------------------ *)
-    (* Android *)
-    method phone_number : string
-    method device_id : string
-    method device_software_version : string
-    method sim_serial_number : string
-    method subscriber_id : string
-    method call_state : call_state
-    method data_activity : data_activity
-    method network_type : network_type
-    method phone_type : phone_type
-    method sim_state : sim_state
-    method is_network_roaming : bool
-    (* ------------------------------------------ *)
+(* ------------------------------------------ *)
+(* iOS *)
+val allows_VOIP : result -> bool
+(* ------------------------------------------ *)
 
-    (* ------------------------------------------ *)
-    (* iOS *)
-    method allows_VOIP : bool
-    (* ------------------------------------------ *)
-
-    (* ------------------------------------------ *)
-    (* Windows Phone *)
-    method is_cellular_data_enabled : bool
-    method is_cellular_data_roaming_enabled : bool
-    (* IsNetworkAvailable or isNetworkAvailable ? *)
-    method is_network_available : bool
-    method is_wifi_enabled : bool
-    (* ------------------------------------------ *)
-  end
+(* ------------------------------------------ *)
+(* Windows Phone *)
+val is_cellular_data_enabled : result -> bool
+val is_cellular_data_roaming_enabled : result -> bool
+(* IsNetworkAvailable or isNetworkAvailable ? *)
+val is_network_available : result -> bool
+val is_wifi_enabled : result -> bool
+(* ------------------------------------------ *)
 (* -------------------------------------------------------------------------- *)
 
 (* -------------------------------------------------------------------------- *)
-class sim_card : Ojs.t ->
-  object
-    inherit Ojs.obj
-
-    method info : (result -> unit) -> (string -> unit) -> unit
-    [@@js.call "getSimInfo"]
-    method has_read_permission : (bool -> unit) -> (string -> unit) -> unit
-    method request_read_permission : unit -> unit
-  end
-(* -------------------------------------------------------------------------- *)
-
-(* -------------------------------------------------------------------------- *)
-val t : unit -> sim_card
-[@@js.get "window.plugins.sim"]
+val info : (result -> unit) -> (string -> unit) -> unit
+[@@js.global "window.plugins.sim.getSimInfo"]
+val has_read_permission : (bool -> unit) -> (string -> unit) -> unit
+[@@js.global "window.plugins.sim.hasReadPermission"]
+val request_read_permission : unit -> unit
+[@@js.global "window.plugins.sim.requestReadPermission"]
 (* -------------------------------------------------------------------------- *)
